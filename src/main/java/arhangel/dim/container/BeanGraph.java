@@ -123,9 +123,23 @@ public class BeanGraph {
                 '}';
     }
 
-    public static void main(String[] args) {
+    public ArrayList<Bean> getBlackListBean(String pathToConfig) throws InvalidConfigurationException {
         BeanGraph beanGraph = new BeanGraph();
+        List<Bean> beens = new BeanXmlReader().parseBeans(pathToConfig);
+        beens.forEach(beanGraph::addVertex);
+        CheckMap checkMap = new CheckMap(beanGraph.vertices);
+        checkMap.check();
+        ArrayList<Bean> result = new ArrayList<>();
+        for (BeanVertex beanV :
+                checkMap.getBlackList()) {
+            result.add(beanV.getBean());
+        }
+        return result;
+    }
 
+
+    public static void main(String[] args) throws InvalidConfigurationException {
+        BeanGraph beanGraph = new BeanGraph();
 
 
         List<Bean> beens = new BeanXmlReader().parseBeans("C:\\temp\\java\\mailru\\messenger\\config1.xml");
@@ -138,7 +152,6 @@ public class BeanGraph {
         System.out.println(checkMap);
 
 
-
     }
 
 
@@ -147,6 +160,10 @@ public class BeanGraph {
         ArrayList<BeanVertex> whiteList = new ArrayList<>();
         ArrayList<BeanVertex> greyList = new ArrayList<>();
         ArrayList<BeanVertex> blackList = new ArrayList<>();
+
+        public ArrayList<BeanVertex> getBlackList() {
+            return blackList;
+        }
 
         @Override
         public String toString() {
@@ -165,18 +182,13 @@ public class BeanGraph {
             this.vertices = new HashMap<>(vertices);
         }
 
-        public void check() {
+        public void check() throws InvalidConfigurationException {
             for (Entry<BeanVertex, List<BeanVertex>> entry : vertices.entrySet()) {
                 BeanVertex beanVertex = entry.getKey();
                 if (circleInMap(beanVertex)) {
-                    System.out.println("The circle found");
-                    return;
-                //    throw new IllegalArgumentException();
+                    throw new InvalidConfigurationException("The circle init classes found");
                 }
             }
-            System.out.println("The circle did not found");
-
-
         }
 
         public boolean circleInMap(BeanVertex beanVertex) {

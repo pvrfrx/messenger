@@ -1,2 +1,2 @@
-2016-10-24 17:12:02 INFO  StringProtocol:53 - encoded: MSG_TEXT;1;Hello;
-2016-10-24 17:12:02 INFO  StringProtocol:22 - decoded: MSG_TEXT;1;Hello;
+2016-10-25 14:41:15 INFO  StringProtocol:53 - encoded: MSG_TEXT;1;Hello;
+2016-10-25 14:41:15 INFO  StringProtocol:22 - decoded: MSG_TEXT;1;Hello;

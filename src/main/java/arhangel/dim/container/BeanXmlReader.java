@@ -25,7 +25,7 @@ public class BeanXmlReader {
     private static final String ATTR_BEAN_ID = "id";
     private static final String ATTR_BEAN_CLASS = "class";
 
-    public List<Bean> parseBeans(String pathToFile) {
+    public List<Bean> parseBeans(String pathToFile) throws InvalidConfigurationException {
 
         List<Bean> result = new ArrayList<>();
 
@@ -33,7 +33,7 @@ public class BeanXmlReader {
         try {
             document = readXml(pathToFile);
         } catch (Exception e) {
-            throw new IllegalArgumentException();
+            throw new InvalidConfigurationException("Cann't read XML file");
         }
 
         Node node = document.getChildNodes().item(0); //получаем корневой каталог
@@ -68,15 +68,15 @@ public class BeanXmlReader {
                             } else if (propertyList.item(j).getAttributes().item(k).getNodeName().equals(ATTR_VALUE)) {
                                 valueProperty = propertyList.item(j).getAttributes().item(k).getNodeValue();
                                 if (typeProperty == ValueType.REF) {
-                                    System.out.println("Property cann't have attributes VAL and REF");
-                                    throw new IllegalArgumentException();
+                                 //   System.out.println("Property cann't have attributes VAL and REF");
+                                    throw new InvalidConfigurationException("Property cann't have attributes VAL and REF");
                                 }
                                 typeProperty = ValueType.VAL;
                             } else if (propertyList.item(j).getAttributes().item(k).getNodeName().equals(ATTR_REF)) {
                                 valueProperty = propertyList.item(j).getAttributes().item(k).getNodeValue();
                                 if (typeProperty == ValueType.VAL) {
-                                    System.out.println("Property cann't have attributes VAL and REF");
-                                    throw new IllegalArgumentException();
+                                //    System.out.println("Property cann't have attributes VAL and REF");
+                                    throw new InvalidConfigurationException("Property cann't have attributes VAL and REF");
                                 }
                                 typeProperty = ValueType.REF;
                             }
@@ -107,7 +107,7 @@ public class BeanXmlReader {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidConfigurationException {
         List<Bean> list = new BeanXmlReader().parseBeans("C:\\temp\\java\\mailru\\messenger\\config1.xml");
         list.forEach(System.out::println);
     }
